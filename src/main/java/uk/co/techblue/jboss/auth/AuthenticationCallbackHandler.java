@@ -26,22 +26,52 @@ import javax.security.sasl.RealmCallback;
 
 import uk.co.techblue.jboss.util.StringUtils;
 
+/**
+ * The implementation of {@link javax.security.auth.callback.CallbackHandler} for passing to underlying authentication services.
+ * 
+ * @author <a href="mailto:ajay.deshwal@techblue.co.uk">Ajay Deshwal</a>
+ */
 public class AuthenticationCallbackHandler implements CallbackHandler {
 
+    /** The realm. */
     private final String realm;
+
+    /** The user name. */
     private final String username;
+
+    /** The password. */
     private final char[] password;
 
+    /**
+     * Instantiates a new authentication callback handler.
+     * 
+     * @param username the user name
+     * @param password the password
+     * @param realm the authentication realm
+     */
     public AuthenticationCallbackHandler(final String username, final char[] password, final String realm) {
         this.username = username;
         this.password = password;
         this.realm = realm;
     }
 
+    /**
+     * Instantiates a new authentication callback handler.
+     * 
+     * @param username the user name
+     * @param password the password
+     * @param realm the authentication realm
+     */
     public AuthenticationCallbackHandler(final String username, final String password, final String realm) {
         this(username, password.toCharArray(), realm);
     }
 
+    /**
+     * Instantiates a new authentication callback handler.
+     * 
+     * @param username the user name
+     * @param password the password
+     */
     public AuthenticationCallbackHandler(final String username, final String password) {
         this(username, StringUtils.defaultString(password).toCharArray(), null);
     }

@@ -15,6 +15,11 @@
  ******************************************************************************/
 package uk.co.techblue.jboss.controller;
 
+/**
+ * The JBoss AS Controller Constants.
+ * 
+ * @author <a href="mailto:ajay.deshwal@techblue.co.uk">Ajay Deshwal</a>
+ */
 public class ControllerConstants {
 
     public static final String DATASOURCE_SUBSYSTEM = "datasources";

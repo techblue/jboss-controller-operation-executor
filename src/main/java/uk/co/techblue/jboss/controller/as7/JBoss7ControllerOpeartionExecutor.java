@@ -247,6 +247,12 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see uk.co.techblue.jboss.controller.ControllerOperationExecutor#isDatasourceExists(uk.co.techblue.jboss.controller.vo.
+     * ControllerClientConfig, java.lang.String)
+     */
     public boolean isDatasourceExists(final ControllerClientConfig controllerClientConfig, final String dataSourceName)
             throws ControllerOperationException {
         return isDatasourceExists(controllerClientConfig, dataSourceName, null);

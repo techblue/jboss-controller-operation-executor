@@ -15,17 +15,40 @@
  ******************************************************************************/
 package uk.co.techblue.jboss.controller.exception;
 
+/**
+ * The ControllerOperationException class.
+ * 
+ * @author <a href="mailto:ajay.deshwal@techblue.co.uk">Ajay Deshwal</a>
+ */
 public class ControllerOperationException extends Exception {
+
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -1802603991955512461L;
 
+    /**
+     * Instantiates a new controller operation exception.
+     * 
+     * @param message the message
+     * @param cause the cause
+     */
     public ControllerOperationException(String message, Throwable cause) {
         super(message, cause);
     }
 
+    /**
+     * Instantiates a new controller operation exception.
+     * 
+     * @param message the message
+     */
     public ControllerOperationException(String message) {
         super(message);
     }
 
+    /**
+     * Instantiates a new controller operation exception.
+     * 
+     * @param cause the cause
+     */
     public ControllerOperationException(Throwable cause) {
         super(cause);
     }
