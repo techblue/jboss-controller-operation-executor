@@ -57,15 +57,16 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      */
     public static void main(String[] args) {
         try {
-            JndiDataSource dataSource = new JndiDataSource("java:/sample-master-ds", "jdbc:mysql://localhost:3306/master",
-                    "com.mysql", "root", "ajay");
-            dataSource.setMaxPoolSize(10);
-            dataSource.setPoolPrefill(true);
-            ControllerClientConfig clientConfig = new ControllerClientConfig("127.0.0.1");
-            clientConfig.setUserName("ajay");
-            clientConfig.setPassword("ajay");
-            new JBoss7ControllerOpeartionExecutor().createDatasource(clientConfig, dataSource, true);
-            new JBoss7ControllerOpeartionExecutor().isDatasourceExists(clientConfig, dataSource.getJndiName());
+          final JndiDataSource dataSource = new JndiDataSource("java:/mysql-propcosystem-testjboss7", "jdbc:mysql://localhost:3306/propcosystem-testjboss7",
+                    "com.mysql", "root", "admin");
+//            dataSource.setMaxPoolSize(10);
+//            dataSource.setPoolPrefill(true);
+          final ControllerClientConfig clientConfig = new ControllerClientConfig("127.0.0.1");
+//            clientConfig.setUserName("ajay");
+//            clientConfig.setPassword("ajay");
+          new JBoss7ControllerOpeartionExecutor().removeDatasource(clientConfig, "mysql-propcosystem-testjboss7","");
+//            new JBoss7ControllerOpeartionExecutor().createDatasource(clientConfig, dataSource, true);
+//            new JBoss7ControllerOpeartionExecutor().isDatasourceExists(clientConfig, dataSource.getJndiName());
             // new JBoss7ControllerOpeartionExecutor().createDatasource(clientConfig, dataSource, true, "full-ha");
             // new JBoss7ControllerOpeartionExecutor().isDatasourceExists(clientConfig, dataSource.getJndiName(), "full-ha");
         } catch (Exception e) {
@@ -142,6 +143,78 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
         }
     }
 
+    /* (non-Javadoc)
+     * @see uk.co.techblue.jboss.controller.ControllerOperationExecutor#removeDatasource(uk.co.techblue.jboss.controller.vo.ControllerClientConfig, uk.co.techblue.jboss.controller.vo.JndiDataSource, java.lang.String[])
+     */
+    public void removeDatasource(final ControllerClientConfig controllerClientConfig, final String datasourceName,
+            final String... serverProfileNames) throws ControllerOperationException {
+        if (serverProfileNames != null && serverProfileNames.length > 0) {
+            for (final String serverProfile : serverProfileNames) {
+            	removeDatasource(controllerClientConfig, datasourceName, serverProfile);
+            }
+        } else {
+        	removeDatasource(controllerClientConfig, datasourceName, "");
+        }
+    }
+    
+    /**
+     * Removes datasource.
+     *
+     * @param controllerClientConfig the controller client config
+     * @param dataSource the data source
+     * @param serverProfileName the server profile name
+     * @throws ControllerOperationException the controller operation exception
+     */
+    private void removeDatasource(final ControllerClientConfig controllerClientConfig, final String datasourceName,
+    		final String serverProfileName) throws ControllerOperationException {
+		final ModelNode request = new ModelNode();
+		request.get(ClientConstants.OP).set(
+				ClientConstants.DEPLOYMENT_REMOVE_OPERATION);
+		if (StringUtils.isNotBlank(serverProfileName)) {
+			request.get(ClientConstants.OP_ADDR).add(ADDRESS_PROFILE,
+					serverProfileName);
+		}
+		request.get(ClientConstants.OP_ADDR).add(ADDRESS_SUBSYSTEM,
+				DATASOURCE_SUBSYSTEM);
+		request.get(ClientConstants.OP_ADDR).add(ADDRESS_DATASOURCE, datasourceName);
+		final ModelControllerClient client = createControllerClient(controllerClientConfig);
+		ModelNode response = null;
+		try {
+			logger.info("Removing datasource '{}' ...", datasourceName);
+			response = client.execute(new OperationBuilder(request).build());
+		} catch (IOException ioe) {
+			throw new ControllerOperationException(
+					"An error occurred while removing datatsource '"+datasourceName+"' from JBoss model controller",
+					ioe);
+		} finally {
+			try {
+				client.close();
+			} catch (IOException ioe) {
+				logger.error(
+						"An error occurred when closing JBoss Controller connection with host {} at port {} while removing datasource '"
+								+ datasourceName + "'", ioe);
+			}
+		}
+		if (!isOperationSuccess(response)) {
+			if (!response.isDefined()) {
+				throw new ControllerOperationException(
+						"A subsystem undefined response status recieved while removing datasource '"
+								+ datasourceName + "'. Most probably the "
+								+ DATASOURCE_SUBSYSTEM
+								+ " subsystem is not defined.");
+			}
+			logger.error("Operation rolled back:"
+					+ response.get(RESPONSE_PROPERTY_ROLLEDBACK));
+			throw new ControllerOperationException(
+					"An error occurred while removing datasource '"
+							+ datasourceName
+							+ ".\n"
+							+ response.get(ClientConstants.FAILURE_DESCRIPTION)
+									.asString());
+		}
+		logger.info("Datasource '{}' removed successfully!", datasourceName);
+	}	
+    
     /**
      * Creates the datasource request.
      * 

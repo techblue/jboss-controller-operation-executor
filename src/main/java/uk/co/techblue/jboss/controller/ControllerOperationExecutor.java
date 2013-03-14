@@ -71,5 +71,17 @@ public interface ControllerOperationExecutor {
      */
     void enableDataSource(ControllerClientConfig controllerClientConfig, String datasourceName, String... serverProfileNames)
             throws ControllerOperationException;
+    
+    /**
+     * Removes datasource.
+     *
+     * @param controllerClientConfig the controller client config
+     * @param dataSource the datasource name
+     * @param serverProfileNames the server profile names
+     * @throws ControllerOperationException the controller operation exception
+     */
+	void removeDatasource(final ControllerClientConfig controllerClientConfig,
+			final String datasourceName, final String... serverProfileNames)
+			throws ControllerOperationException;
 
 }
