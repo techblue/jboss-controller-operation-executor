@@ -15,16 +15,36 @@
  ******************************************************************************/
 package uk.co.techblue.jboss.controller;
 
+import java.util.List;
+
+import org.jboss.dmr.ModelNode;
+
 import uk.co.techblue.jboss.controller.exception.ControllerOperationException;
 import uk.co.techblue.jboss.controller.vo.ControllerClientConfig;
 import uk.co.techblue.jboss.controller.vo.JndiDataSource;
 
+// TODO: Auto-generated Javadoc
 /**
  * A service that executes operations on an application server management model controller.
  * 
  * @author <a href="mailto:ajay.deshwal@techblue.co.uk">Ajay Deshwal</a>
  */
 public interface ControllerOperationExecutor {
+
+    /**
+     * The Enum DatasourceStatus.
+     */
+    enum DatasourceStatus {
+
+        /** The enabled. */
+        ENABLED,
+
+        /** The disabled. */
+        DISABLED,
+
+        /** The all. */
+        ALL
+    };
 
     /**
      * Creates a datasource using given client configuration and DS properties into the given server profiles.
@@ -71,17 +91,73 @@ public interface ControllerOperationExecutor {
      */
     void enableDataSource(ControllerClientConfig controllerClientConfig, String datasourceName, String... serverProfileNames)
             throws ControllerOperationException;
-    
+
     /**
      * Removes datasource.
-     *
+     * 
      * @param controllerClientConfig the controller client config
-     * @param dataSource the datasource name
+     * @param datasourceName the datasource name
      * @param serverProfileNames the server profile names
      * @throws ControllerOperationException the controller operation exception
      */
-	void removeDatasource(final ControllerClientConfig controllerClientConfig,
-			final String datasourceName, final String... serverProfileNames)
-			throws ControllerOperationException;
+    void removeDatasource(final ControllerClientConfig controllerClientConfig, final String datasourceName,
+            final String... serverProfileNames) throws ControllerOperationException;
+
+    /**
+     * Gets the datasources.
+     * 
+     * @param controllerClientConfig the controller client config
+     * @param serverProfileName the server profile name
+     * @param dataSourceStatus the data source status
+     * @return the datasources
+     * @throws ControllerOperationException the controller operation exception
+     */
+    List<ModelNode> getDatasources(final ControllerClientConfig controllerClientConfig, final String serverProfileName,
+            final DatasourceStatus dataSourceStatus) throws ControllerOperationException;
+
+    /**
+     * Disable data source.
+     * 
+     * @param controllerClientConfig the controller client config
+     * @param datasourceName the datasource name
+     * @param serverProfileNames the server profile names
+     * @throws ControllerOperationException the controller operation exception
+     */
+    void disableDataSource(ControllerClientConfig controllerClientConfig, String datasourceName, String... serverProfileNames)
+            throws ControllerOperationException;
+
+    /**
+     * Enable data sources.
+     * 
+     * @param controllerClientConfig the controller client config
+     * @param datasourceName the datasource name
+     * @param serverProfileNames the server profile names
+     * @throws ControllerOperationException the controller operation exception
+     */
+    void enableDataSources(ControllerClientConfig controllerClientConfig, List<String> datasourceName,
+            String... serverProfileNames) throws ControllerOperationException;
+
+    /**
+     * Disable data sources.
+     * 
+     * @param controllerClientConfig the controller client config
+     * @param datasourceName the datasource name
+     * @param serverProfileNames the server profile names
+     * @throws ControllerOperationException the controller operation exception
+     */
+    void disableDataSources(ControllerClientConfig controllerClientConfig, List<String> datasourceName,
+            String... serverProfileNames) throws ControllerOperationException;
+
+    /**
+     * Checks if is datasource enabled.
+     * 
+     * @param controllerClientConfig the controller client config
+     * @param serverProfileName the server profile name
+     * @param datasource the datasource
+     * @return true, if is datasource enabled
+     * @throws ControllerOperationException the controller operation exception
+     */
+    boolean isDatasourceEnabled(final ControllerClientConfig controllerClientConfig, final String serverProfileName,
+            final String datasource) throws ControllerOperationException;
 
 }

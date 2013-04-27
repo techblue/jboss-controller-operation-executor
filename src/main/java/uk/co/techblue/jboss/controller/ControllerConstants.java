@@ -25,11 +25,14 @@ public class ControllerConstants {
     public static final String DATASOURCE_SUBSYSTEM = "datasources";
 
     public static final String OPERATION_READ_RESOURCE = "read-resource";
+    public static final String OPERATION_READ_ATTRIBUTE = "read-attribute";
     public static final String OPERATION_ENABLE = "enable";
+    public static final String OPERATION_DISABLE = "disable";
 
     public static final String ADDRESS_PROFILE = "profile";
     public static final String ADDRESS_SUBSYSTEM = "subsystem";
     public static final String ADDRESS_DATASOURCE = "data-source";
+    public static final String ATTRIBUTE_ENABLED = "enabled";
 
     public static final String GENERAL_PROPERTY_RECURSIVE = "recursive";
 
