@@ -66,18 +66,19 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
             dataSource.setMaxPoolSize(10);
             dataSource.setPoolPrefill(true);
             final ControllerClientConfig clientConfig = new ControllerClientConfig("127.0.0.1");
-//             clientConfig.setUserName("ajay");
-//             clientConfig.setPassword("ajay");
-//            List<ModelNode> dataSources = new JBoss7ControllerOpeartionExecutor().getDatasources(clientConfig, "", DatasourceStatus.ALL);
-//            for (ModelNode dataSource : dataSources) {
-//                System.out.println(dataSource.asProperty().getName());
-//            }
-//             new JBoss7ControllerOpeartionExecutor().disableDataSource(clientConfig, "java:/mysql-testjboss7","");
-             new JBoss7ControllerOpeartionExecutor().removeDatasource(clientConfig, "java:/mysql-testjboss7","");
-//             new JBoss7ControllerOpeartionExecutor().createDatasource(clientConfig, dataSource, true);
-//             new JBoss7ControllerOpeartionExecutor().isDatasourceExists(clientConfig, dataSource.getJndiName());
-//             new JBoss7ControllerOpeartionExecutor().createDatasource(clientConfig, dataSource, true, "ha");
-//             new JBoss7ControllerOpeartionExecutor().isDatasourceExists(clientConfig, dataSource.getJndiName(), "full-ha");
+            // clientConfig.setUserName("ajay");
+            // clientConfig.setPassword("ajay");
+            // List<ModelNode> dataSources = new JBoss7ControllerOpeartionExecutor().getDatasources(clientConfig, "",
+            // DatasourceStatus.ALL);
+            // for (ModelNode dataSource : dataSources) {
+            // System.out.println(dataSource.asProperty().getName());
+            // }
+            // new JBoss7ControllerOpeartionExecutor().disableDataSource(clientConfig, "java:/mysql-testjboss7","");
+            new JBoss7ControllerOpeartionExecutor().removeDatasource(clientConfig, "java:/mysql-testjboss7", "");
+            // new JBoss7ControllerOpeartionExecutor().createDatasource(clientConfig, dataSource, true);
+            // new JBoss7ControllerOpeartionExecutor().isDatasourceExists(clientConfig, dataSource.getJndiName());
+            // new JBoss7ControllerOpeartionExecutor().createDatasource(clientConfig, dataSource, true, "ha");
+            // new JBoss7ControllerOpeartionExecutor().isDatasourceExists(clientConfig, dataSource.getJndiName(), "full-ha");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -677,7 +678,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
             throw new IllegalArgumentException("Datasource list cannot be blank or null.");
         }
 
-        for (String dataSourceName : dataSourceNames) {
+        for (final String dataSourceName : dataSourceNames) {
             enableDataSource(controllerClientConfig, dataSourceName, serverProfileNames);
         }
     }
@@ -694,9 +695,52 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
         if (dataSourceNames == null || dataSourceNames.isEmpty()) {
             throw new IllegalArgumentException("Datasource list cannot be blank or null.");
         }
-        for (String dataSourceName : dataSourceNames) {
+        for (final String dataSourceName : dataSourceNames) {
             disableDataSource(controllerClientConfig, dataSourceName, serverProfileNames);
         }
 
+    }
+
+    
+    /* (non-Javadoc)
+     * @see uk.co.techblue.jboss.controller.ControllerOperationExecutor#createDatasources(uk.co.techblue.jboss.controller.vo.ControllerClientConfig, java.util.List, boolean, java.lang.String[])
+     */
+    public void createDatasources(final ControllerClientConfig controllerClientConfig, final List<JndiDataSource> dataSources,
+            final boolean enable, final String... serverProfileNames) throws ControllerOperationException {
+
+        if (dataSources == null || dataSources.isEmpty()) {
+            throw new IllegalArgumentException("Datasource list cannot be blank or null.");
+        }
+        final List<String> addedDatasourceNames = new ArrayList<String>();
+        for (final JndiDataSource dataSource : dataSources) {
+            try {
+                createDatasource(controllerClientConfig, dataSource, enable, serverProfileNames);
+                addedDatasourceNames.add(dataSource.getName());
+            } catch (ControllerOperationException coe) {
+                try {
+                    if(!addedDatasourceNames.isEmpty()){
+                        removeDatasources(controllerClientConfig, addedDatasourceNames, serverProfileNames);
+                    }
+                } catch (ControllerOperationException coexp) {
+                    logger.error("An error occurred while rolling back the datasource deployemnt", coexp);
+                }
+                throw coe;
+            }
+        }
+    }
+
+    
+    /* (non-Javadoc)
+     * @see uk.co.techblue.jboss.controller.ControllerOperationExecutor#removeDatasources(uk.co.techblue.jboss.controller.vo.ControllerClientConfig, java.util.List, java.lang.String[])
+     */
+    public void removeDatasources(final ControllerClientConfig controllerClientConfig, final List<String> datasourceNames,
+            final String... serverProfileNames) throws ControllerOperationException {
+
+        if (datasourceNames == null || datasourceNames.isEmpty()) {
+            throw new IllegalArgumentException("Datasource list cannot be blank or null.");
+        }
+        for (final String datasourceName : datasourceNames) {
+            removeDatasource(controllerClientConfig, datasourceName, serverProfileNames);
+        }
     }
 }

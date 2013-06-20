@@ -159,5 +159,28 @@ public interface ControllerOperationExecutor {
      */
     boolean isDatasourceEnabled(final ControllerClientConfig controllerClientConfig, final String serverProfileName,
             final String datasource) throws ControllerOperationException;
+    
+    /**
+     * Creates the datasources from a list.
+     *
+     * @param controllerClientConfig the controller client config
+     * @param dataSources the data sources
+     * @param enable the enable
+     * @param serverProfileNames the server profile names
+     * @throws ControllerOperationException the controller operation exception
+     */
+    void createDatasources(final ControllerClientConfig controllerClientConfig, final List<JndiDataSource> dataSources,
+            final boolean enable, final String... serverProfileNames) throws ControllerOperationException;
+    
+    /**
+     * Removes the datasources.
+     *
+     * @param controllerClientConfig the controller client config
+     * @param datasourceNames the datasource names
+     * @param serverProfileNames the server profile names
+     * @throws ControllerOperationException the controller operation exception
+     */
+    void removeDatasources(final ControllerClientConfig controllerClientConfig, final List<String> datasourceNames,
+            final String... serverProfileNames) throws ControllerOperationException;
 
 }
