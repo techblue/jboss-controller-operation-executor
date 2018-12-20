@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.co.techblue</groupId>
     <artifactId>jboss-controller-operation-executor</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>2.0</version>
     <name>JBoss AS 7 controller operation executor</name>
     <description>Client API  used to execute operations on JBoss AS 7 controller interface.</description>
 
