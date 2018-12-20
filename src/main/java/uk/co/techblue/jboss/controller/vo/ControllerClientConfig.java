@@ -54,7 +54,7 @@ public class ControllerClientConfig {
      */
     public ControllerClientConfig(String host) {
         this.host = host;
-        this.port = 9999;
+        this.port = 9990;
     }
 
     /**

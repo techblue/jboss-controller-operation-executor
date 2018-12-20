@@ -15,7 +15,42 @@
  ******************************************************************************/
 package uk.co.techblue.jboss.controller.as7;
 
-import static uk.co.techblue.jboss.controller.ControllerConstants.*;
+import static uk.co.techblue.jboss.controller.ControllerConstants.ADDRESS_DATASOURCE;
+import static uk.co.techblue.jboss.controller.ControllerConstants.ADDRESS_PROFILE;
+import static uk.co.techblue.jboss.controller.ControllerConstants.ADDRESS_SUBSYSTEM;
+import static uk.co.techblue.jboss.controller.ControllerConstants.ATTRIBUTE_ENABLED;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DATASOURCE_SUBSYSTEM;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_BG_VALIDATION;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_BG_VALIDATION_MILLIS;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_CONNECTIONURL;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_DRIVERNAME;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_EXCEPTION_SORTER_CLASSNAME;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_JNDINAME;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_JTA_INTEGRATION;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_MAXPOOLSIZE;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_MINPOOLSIZE;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_NEWCONNECTIONSQL;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_PASSWORD;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_POOLNAME;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_POOLPREFILL;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_POOL_STRICT_MINIMUM;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_PREPARED_STATEMENTS_CACHE_SIZE;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_SECURITYDOMAIN;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_SHARE_PREPARED_STATEMENTS;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_STALE_CONNCHECKER_CLASSNAME;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_TRANSACTIONISOLATION;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_USEJAVACONTEXT;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_USERNAME;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_USE_CCM;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_VALIDATE_ON_MATCH;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_VALID_CONNCHECKER_CLASSNAME;
+import static uk.co.techblue.jboss.controller.ControllerConstants.DS_PROPERTY_VALID_CONNECTION_SQL;
+import static uk.co.techblue.jboss.controller.ControllerConstants.GENERAL_PROPERTY_RECURSIVE;
+import static uk.co.techblue.jboss.controller.ControllerConstants.OPERATION_DISABLE;
+import static uk.co.techblue.jboss.controller.ControllerConstants.OPERATION_READ_ATTRIBUTE;
+import static uk.co.techblue.jboss.controller.ControllerConstants.OPERATION_READ_RESOURCE;
+import static uk.co.techblue.jboss.controller.ControllerConstants.REMOTING_PROTOCOL;
+import static uk.co.techblue.jboss.controller.ControllerConstants.RESPONSE_PROPERTY_ROLLEDBACK;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -28,10 +63,8 @@ import java.util.List;
 import javax.security.auth.callback.CallbackHandler;
 
 import org.jboss.as.controller.client.ModelControllerClient;
-import org.jboss.as.controller.client.ModelControllerClientConfiguration;
 import org.jboss.as.controller.client.OperationBuilder;
 import org.jboss.as.controller.client.helpers.ClientConstants;
-import org.jboss.as.controller.client.impl.ClientConfigurationImpl;
 import org.jboss.dmr.ModelNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +76,6 @@ import uk.co.techblue.jboss.controller.vo.ControllerClientConfig;
 import uk.co.techblue.jboss.controller.vo.JndiDataSource;
 import uk.co.techblue.jboss.util.StringUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * The service to execute operations on JBoss AS 7 management model controller.
  * 
@@ -62,7 +94,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
     public static void main(String[] args) {
         try {
             final JndiDataSource dataSource = new JndiDataSource("java:/mysql-testjboss7", "jdbc:mysql://localhost:3306/test",
-                    "com.mysql", "root", "root");
+                "com.mysql", "root", "root");
             dataSource.setMaxPoolSize(10);
             dataSource.setPoolPrefill(true);
             final ControllerClientConfig clientConfig = new ControllerClientConfig("127.0.0.1");
@@ -91,7 +123,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      * ControllerClientConfig, uk.co.techblue.jboss.controller.vo.JndiDataSource, boolean, java.lang.String[])
      */
     public void createDatasource(final ControllerClientConfig controllerClientConfig, final JndiDataSource dataSource,
-            final boolean enable, final String... serverProfileNames) throws ControllerOperationException {
+        final boolean enable, final String... serverProfileNames) throws ControllerOperationException {
         if (serverProfileNames != null && serverProfileNames.length > 0) {
             for (final String serverProfile : serverProfileNames) {
                 createDatasource(controllerClientConfig, dataSource, enable, serverProfile);
@@ -118,7 +150,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      * @throws ControllerOperationException the controller operation exception
      */
     private void createDatasource(final ControllerClientConfig controllerClientConfig, final JndiDataSource dataSource,
-            final boolean enable, final String serverProfileName) throws ControllerOperationException {
+        final boolean enable, final String serverProfileName) throws ControllerOperationException {
         final String jndiName = dataSource.getJndiName();
         final ModelNode request = new ModelNode();
         request.get(ClientConstants.OP).set(ClientConstants.ADD);
@@ -142,20 +174,21 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
                 client.close();
             } catch (IOException ioe) {
                 logger.error(
-                        "An error occurred when closing JBoss Controller connection with host "
-                                + controllerClientConfig.getHost() + " at port " + controllerClientConfig.getPort()
-                                + " while adding datasource '" + jndiName + "'", ioe);
+                    "An error occurred when closing JBoss Controller connection with host "
+                        + controllerClientConfig.getHost() + " at port " + controllerClientConfig.getPort()
+                        + " while adding datasource '" + jndiName + "'",
+                    ioe);
             }
         }
         if (!isOperationSuccess(response)) {
             if (!response.isDefined()) {
                 throw new ControllerOperationException(
-                        "A subsystem undefined response status recieved while adding datasource '" + jndiName
-                                + "'. Most probably the " + DATASOURCE_SUBSYSTEM + " subsystem is not defined.");
+                    "A subsystem undefined response status recieved while adding datasource '" + jndiName
+                        + "'. Most probably the " + DATASOURCE_SUBSYSTEM + " subsystem is not defined.");
             }
             logger.error("Operation rolled back:" + response.get(RESPONSE_PROPERTY_ROLLEDBACK));
             throw new ControllerOperationException("An error occurred while adding datasource '" + jndiName + ".\n"
-                    + response.get(ClientConstants.FAILURE_DESCRIPTION).asString());
+                + response.get(ClientConstants.FAILURE_DESCRIPTION).asString());
         }
         logger.info("Datasource '{}' added successfully!", jndiName);
         if (enable) {
@@ -170,7 +203,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      * ControllerClientConfig, uk.co.techblue.jboss.controller.vo.JndiDataSource, java.lang.String[])
      */
     public void removeDatasource(final ControllerClientConfig controllerClientConfig, final String datasourceName,
-            final String... serverProfileNames) throws ControllerOperationException {
+        final String... serverProfileNames) throws ControllerOperationException {
         if (serverProfileNames != null && serverProfileNames.length > 0) {
             for (final String serverProfile : serverProfileNames) {
                 removeDatasource(controllerClientConfig, datasourceName, serverProfile);
@@ -189,7 +222,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      * @throws ControllerOperationException the controller operation exception
      */
     private void removeDatasource(final ControllerClientConfig controllerClientConfig, final String datasourceName,
-            final String serverProfileName) throws ControllerOperationException {
+        final String serverProfileName) throws ControllerOperationException {
         final ModelNode request = new ModelNode();
         request.get(ClientConstants.OP).set(ClientConstants.DEPLOYMENT_REMOVE_OPERATION);
         if (StringUtils.isNotBlank(serverProfileName)) {
@@ -204,26 +237,27 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
             response = client.execute(new OperationBuilder(request).build());
         } catch (IOException ioe) {
             throw new ControllerOperationException("An error occurred while removing datatsource '" + datasourceName
-                    + "' from JBoss model controller", ioe);
+                + "' from JBoss model controller", ioe);
         } finally {
             try {
                 client.close();
             } catch (IOException ioe) {
                 logger.error(
-                        "An error occurred when closing JBoss Controller connection with host "
-                                + controllerClientConfig.getHost() + " at port " + controllerClientConfig.getPort()
-                                + " while removing datasource '" + datasourceName + "'", ioe);
+                    "An error occurred when closing JBoss Controller connection with host "
+                        + controllerClientConfig.getHost() + " at port " + controllerClientConfig.getPort()
+                        + " while removing datasource '" + datasourceName + "'",
+                    ioe);
             }
         }
         if (!isOperationSuccess(response)) {
             if (!response.isDefined()) {
                 throw new ControllerOperationException(
-                        "A subsystem undefined response status recieved while removing datasource '" + datasourceName
-                                + "'. Most probably the " + DATASOURCE_SUBSYSTEM + " subsystem is not defined.");
+                    "A subsystem undefined response status recieved while removing datasource '" + datasourceName
+                        + "'. Most probably the " + DATASOURCE_SUBSYSTEM + " subsystem is not defined.");
             }
             logger.error("Operation rolled back:" + response.get(RESPONSE_PROPERTY_ROLLEDBACK));
             throw new ControllerOperationException("An error occurred while removing datasource '" + datasourceName + ".\n"
-                    + response.get(ClientConstants.FAILURE_DESCRIPTION).asString());
+                + response.get(ClientConstants.FAILURE_DESCRIPTION).asString());
         }
         logger.info("Datasource '{}' removed successfully!", datasourceName);
     }
@@ -294,18 +328,16 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      * @throws ControllerOperationException the controller operation exception
      */
     private ModelControllerClient createControllerClient(final ControllerClientConfig controllerClientConfig)
-            throws ControllerOperationException {
+        throws ControllerOperationException {
         ModelControllerClient controllerClient = null;
+        final CallbackHandler authCallbackHandler = getAuthCallbackHandler(controllerClientConfig);
         try {
-            final CallbackHandler authCallbackHandler = getAuthCallbackHandler(controllerClientConfig);
-            final ModelControllerClientConfiguration controllerConfig = ClientConfigurationImpl.create(
-                    controllerClientConfig.getHost(), controllerClientConfig.getPort(), authCallbackHandler,
-                    controllerClientConfig.getSaslOptions());
-            controllerClient = ModelControllerClient.Factory.create(controllerConfig);
+            controllerClient = ModelControllerClient.Factory.create(REMOTING_PROTOCOL, controllerClientConfig.getHost(), controllerClientConfig.getPort(), authCallbackHandler);
         } catch (UnknownHostException uhe) {
             throw new ControllerOperationException(
-                    "Tried establishing connection with JBoss controller process. Unable to connect to host: "
-                            + controllerClientConfig.getHost() + " at port " + controllerClientConfig.getPort(), uhe);
+                "Tried establishing connection with JBoss controller process. Unable to connect to host: "
+                    + controllerClientConfig.getHost() + " at port " + controllerClientConfig.getPort(),
+                uhe);
         }
         return controllerClient;
     }
@@ -347,7 +379,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      * ControllerClientConfig, java.lang.String)
      */
     public boolean isDatasourceExists(final ControllerClientConfig controllerClientConfig, final String dataSourceName)
-            throws ControllerOperationException {
+        throws ControllerOperationException {
         return isDatasourceExists(controllerClientConfig, dataSourceName, null);
     }
 
@@ -358,7 +390,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      * ControllerClientConfig, java.lang.String, java.lang.String)
      */
     public boolean isDatasourceExists(final ControllerClientConfig controllerClientConfig, final String dataSourceName,
-            final String serverProfileName) throws ControllerOperationException {
+        final String serverProfileName) throws ControllerOperationException {
         logger.info("Checking if datasource '{}' exists...", dataSourceName);
         final List<ModelNode> datasources = getDatasources(controllerClientConfig, serverProfileName, DatasourceStatus.ALL);
         if (datasources != null && !datasources.isEmpty()) {
@@ -371,8 +403,8 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
             }
         } else {
             throw new ControllerOperationException(
-                    "A subsystem undefined response status recieved while checking if datasource '" + dataSourceName
-                            + "' exists. Most probably the " + DATASOURCE_SUBSYSTEM + " subsystem is not defined.");
+                "A subsystem undefined response status recieved while checking if datasource '" + dataSourceName
+                    + "' exists. Most probably the " + DATASOURCE_SUBSYSTEM + " subsystem is not defined.");
         }
         logger.info("Datasource '{}' does not exist in datasource subsystem!", dataSourceName);
         return false;
@@ -385,7 +417,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      * ControllerClientConfig, java.lang.String, java.lang.String[])
      */
     public void enableDataSource(final ControllerClientConfig controllerClientConfig, final String datasourceName,
-            final String... serverProfileNames) throws ControllerOperationException {
+        final String... serverProfileNames) throws ControllerOperationException {
         if (serverProfileNames != null && serverProfileNames.length > 0) {
             for (final String serverProfile : serverProfileNames) {
                 enableDataSource(controllerClientConfig, datasourceName, serverProfile);
@@ -410,9 +442,11 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      * @throws ControllerOperationException the controller operation exception
      */
     private void enableDataSource(final ControllerClientConfig controllerClientConfig, final String datasourceName,
-            final String serverProfileName) throws ControllerOperationException {
+        final String serverProfileName) throws ControllerOperationException {
         final ModelNode request = new ModelNode();
-        request.get(ClientConstants.OP).set(OPERATION_ENABLE);
+        request.get(ClientConstants.OP).set(ClientConstants.WRITE_ATTRIBUTE_OPERATION);
+        request.get(ClientConstants.NAME).set(ATTRIBUTE_ENABLED);
+        request.get(ClientConstants.VALUE).set(true);
         if (StringUtils.isNotBlank(serverProfileName)) {
             request.get(ClientConstants.OP_ADDR).add(ADDRESS_PROFILE, serverProfileName);
         }
@@ -425,26 +459,28 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
             response = client.execute(new OperationBuilder(request).build());
         } catch (IOException ioe) {
             throw new ControllerOperationException(
-                    "An error occurred while executing operation on JBoss controller to enable datasource '" + datasourceName
-                            + "'", ioe);
+                "An error occurred while executing operation on JBoss controller to enable datasource '" + datasourceName
+                    + "'",
+                ioe);
         } finally {
             try {
                 client.close();
             } catch (IOException ioe) {
                 logger.error(
-                        "An error occurred while closing JBoss Controller connection with host "
-                                + controllerClientConfig.getHost() + " at port " + controllerClientConfig.getPort()
-                                + " during the process of enabling datasource '" + datasourceName + "'", ioe);
+                    "An error occurred while closing JBoss Controller connection with host "
+                        + controllerClientConfig.getHost() + " at port " + controllerClientConfig.getPort()
+                        + " during the process of enabling datasource '" + datasourceName + "'",
+                    ioe);
             }
         }
         if (!isOperationSuccess(response)) {
             if (!response.isDefined()) {
                 throw new ControllerOperationException(
-                        "A subsystem undefined response status recieved while enabling datasource '" + datasourceName
-                                + "'. Most probably the " + DATASOURCE_SUBSYSTEM + " subsystem is not defined.");
+                    "A subsystem undefined response status recieved while enabling datasource '" + datasourceName
+                        + "'. Most probably the " + DATASOURCE_SUBSYSTEM + " subsystem is not defined.");
             }
             throw new ControllerOperationException("An error thrown from JBoss controller while enabling datasource:'"
-                    + datasourceName + "'.\n" + response.get(ClientConstants.FAILURE_DESCRIPTION).asString());
+                + datasourceName + "'.\n" + response.get(ClientConstants.FAILURE_DESCRIPTION).asString());
 
         }
         logger.info("Datasource '{}' enabled successfully!", datasourceName);
@@ -471,7 +507,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      */
     @Override
     public List<ModelNode> getDatasources(final ControllerClientConfig controllerClientConfig, final String serverProfileName,
-            final DatasourceStatus datasourceStatus) throws ControllerOperationException {
+        final DatasourceStatus datasourceStatus) throws ControllerOperationException {
 
         final ModelNode request = new ModelNode();
         request.get(ClientConstants.OP).set(OPERATION_READ_RESOURCE);
@@ -487,24 +523,24 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
             response = controllerClient.execute(new OperationBuilder(request).build());
         } catch (IOException ioe) {
             throw new ControllerOperationException(
-                    "An error occurred while executing operation on JBoss controller to get the datasources", ioe);
+                "An error occurred while executing operation on JBoss controller to get the datasources", ioe);
         } finally {
             try {
                 controllerClient.close();
             } catch (IOException ioe) {
                 logger.error("An error occurred while closing JBoss Controller client connection with host "
-                        + controllerClientConfig.getHost() + " at port " + controllerClientConfig.getPort()
-                        + " during the process of getting all the datasources", ioe);
+                    + controllerClientConfig.getHost() + " at port " + controllerClientConfig.getPort()
+                    + " during the process of getting all the datasources", ioe);
             }
         }
         if (!isOperationSuccess(response)) {
             if (!response.isDefined()) {
                 throw new ControllerOperationException(
-                        "A subsystem undefined response status recieved while getting datasources. Most probably the "
-                                + DATASOURCE_SUBSYSTEM + " subsystem is not defined.");
+                    "A subsystem undefined response status recieved while getting datasources. Most probably the "
+                        + DATASOURCE_SUBSYSTEM + " subsystem is not defined.");
             }
             throw new ControllerOperationException("An error thrown from JBoss controller while getting datasources.\n"
-                    + response.get(ClientConstants.FAILURE_DESCRIPTION).asString());
+                + response.get(ClientConstants.FAILURE_DESCRIPTION).asString());
 
         }
         final ModelNode datasources = response.get(ClientConstants.RESULT).get(ADDRESS_DATASOURCE);
@@ -516,8 +552,8 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
             }
         } else {
             throw new ControllerOperationException(
-                    "A subsystem undefined response status recieved while getting datasources. Most probably the "
-                            + DATASOURCE_SUBSYSTEM + " subsystem is not defined.");
+                "A subsystem undefined response status recieved while getting datasources. Most probably the "
+                    + DATASOURCE_SUBSYSTEM + " subsystem is not defined.");
         }
     }
 
@@ -531,7 +567,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      * @throws ControllerOperationException the controller operation exception
      */
     private List<ModelNode> getFilteredDataSources(final ControllerClientConfig controllerClientConfig,
-            final DatasourceStatus datasourceStatus, final List<ModelNode> datasourceList) throws ControllerOperationException {
+        final DatasourceStatus datasourceStatus, final List<ModelNode> datasourceList) throws ControllerOperationException {
 
         List<ModelNode> datasources = null;
         if (datasourceList == null || datasourceList.isEmpty()) {
@@ -556,7 +592,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      * ControllerClientConfig, java.lang.String, java.lang.String)
      */
     public boolean isDatasourceEnabled(final ControllerClientConfig controllerClientConfig, final String serverProfileName,
-            final String datasource) throws ControllerOperationException {
+        final String datasource) throws ControllerOperationException {
         final ModelNode request = new ModelNode();
         request.get(ClientConstants.OP).set(OPERATION_READ_ATTRIBUTE);
         if (StringUtils.isNotBlank(serverProfileName)) {
@@ -572,25 +608,25 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
             response = controllerClient.execute(new OperationBuilder(request).build());
         } catch (IOException ioe) {
             throw new ControllerOperationException(
-                    "An error occurred while executing operation on JBoss controller to get the datasource status", ioe);
+                "An error occurred while executing operation on JBoss controller to get the datasource status", ioe);
         } finally {
             try {
                 controllerClient.close();
             } catch (IOException ioe) {
                 logger.error("An error occurred while closing JBoss Controller client connection with host "
-                        + controllerClientConfig.getHost() + " at port " + controllerClientConfig.getPort()
-                        + " during the process of getting the status of datasource '" + datasource + "'", ioe);
+                    + controllerClientConfig.getHost() + " at port " + controllerClientConfig.getPort()
+                    + " during the process of getting the status of datasource '" + datasource + "'", ioe);
             }
         }
         if (!isOperationSuccess(response)) {
             if (!response.isDefined()) {
                 throw new ControllerOperationException(
-                        "A subsystem undefined response status recieved while getting the status of datasource '" + datasource
-                                + "'. Most probably the " + DATASOURCE_SUBSYSTEM + " subsystem is not defined.");
+                    "A subsystem undefined response status recieved while getting the status of datasource '" + datasource
+                        + "'. Most probably the " + DATASOURCE_SUBSYSTEM + " subsystem is not defined.");
             }
             throw new ControllerOperationException(
-                    "An error thrown from JBoss controller while getting the status of datasource '" + datasource + "'.\n"
-                            + response.get(ClientConstants.FAILURE_DESCRIPTION).asString());
+                "An error thrown from JBoss controller while getting the status of datasource '" + datasource + "'.\n"
+                    + response.get(ClientConstants.FAILURE_DESCRIPTION).asString());
 
         }
         return response.get(ClientConstants.RESULT).asBoolean();
@@ -604,7 +640,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      */
     @Override
     public void disableDataSource(ControllerClientConfig controllerClientConfig, String datasourceName,
-            String... serverProfileNames) throws ControllerOperationException {
+        String... serverProfileNames) throws ControllerOperationException {
         if (serverProfileNames != null && serverProfileNames.length > 0) {
             for (final String serverProfile : serverProfileNames) {
                 disableDataSource(controllerClientConfig, datasourceName, serverProfile);
@@ -623,7 +659,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      * @throws ControllerOperationException the controller operation exception
      */
     private void disableDataSource(final ControllerClientConfig controllerClientConfig, final String datasourceName,
-            final String serverProfileName) throws ControllerOperationException {
+        final String serverProfileName) throws ControllerOperationException {
 
         final ModelNode request = new ModelNode();
         request.get(ClientConstants.OP).set(OPERATION_DISABLE);
@@ -639,26 +675,28 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
             response = client.execute(new OperationBuilder(request).build());
         } catch (IOException ioe) {
             throw new ControllerOperationException(
-                    "An error occurred while executing operation on JBoss controller to disable datasource '" + datasourceName
-                            + "'", ioe);
+                "An error occurred while executing operation on JBoss controller to disable datasource '" + datasourceName
+                    + "'",
+                ioe);
         } finally {
             try {
                 client.close();
             } catch (IOException ioe) {
                 logger.error(
-                        "An error occurred while closing JBoss Controller connection with host "
-                                + controllerClientConfig.getHost() + " at port " + controllerClientConfig.getPort()
-                                + " during the process of disabling datasource '" + datasourceName + "'", ioe);
+                    "An error occurred while closing JBoss Controller connection with host "
+                        + controllerClientConfig.getHost() + " at port " + controllerClientConfig.getPort()
+                        + " during the process of disabling datasource '" + datasourceName + "'",
+                    ioe);
             }
         }
         if (!isOperationSuccess(response)) {
             if (!response.isDefined()) {
                 throw new ControllerOperationException(
-                        "A subsystem undefined response status recieved while disabling datasource '" + datasourceName
-                                + "'. Most probably the " + DATASOURCE_SUBSYSTEM + " subsystem is not defined.");
+                    "A subsystem undefined response status recieved while disabling datasource '" + datasourceName
+                        + "'. Most probably the " + DATASOURCE_SUBSYSTEM + " subsystem is not defined.");
             }
             throw new ControllerOperationException("An error thrown from JBoss controller while disabling datasource:'"
-                    + datasourceName + "'.\n" + response.get(ClientConstants.FAILURE_DESCRIPTION).asString());
+                + datasourceName + "'.\n" + response.get(ClientConstants.FAILURE_DESCRIPTION).asString());
 
         }
         logger.info("Datasource '{}' disabled successfully!", datasourceName);
@@ -673,7 +711,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      */
     @Override
     public void enableDataSources(final ControllerClientConfig controllerClientConfig, final List<String> dataSourceNames,
-            final String... serverProfileNames) throws ControllerOperationException {
+        final String... serverProfileNames) throws ControllerOperationException {
         if (dataSourceNames == null || dataSourceNames.isEmpty()) {
             throw new IllegalArgumentException("Datasource list cannot be blank or null.");
         }
@@ -691,7 +729,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      */
     @Override
     public void disableDataSources(final ControllerClientConfig controllerClientConfig, final List<String> dataSourceNames,
-            final String... serverProfileNames) throws ControllerOperationException {
+        final String... serverProfileNames) throws ControllerOperationException {
         if (dataSourceNames == null || dataSourceNames.isEmpty()) {
             throw new IllegalArgumentException("Datasource list cannot be blank or null.");
         }
@@ -701,12 +739,14 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
 
     }
 
-    
-    /* (non-Javadoc)
-     * @see uk.co.techblue.jboss.controller.ControllerOperationExecutor#createDatasources(uk.co.techblue.jboss.controller.vo.ControllerClientConfig, java.util.List, boolean, java.lang.String[])
+    /*
+     * (non-Javadoc)
+     * 
+     * @see uk.co.techblue.jboss.controller.ControllerOperationExecutor#createDatasources(uk.co.techblue.jboss.controller.vo.
+     * ControllerClientConfig, java.util.List, boolean, java.lang.String[])
      */
     public void createDatasources(final ControllerClientConfig controllerClientConfig, final List<JndiDataSource> dataSources,
-            final boolean enable, final String... serverProfileNames) throws ControllerOperationException {
+        final boolean enable, final String... serverProfileNames) throws ControllerOperationException {
 
         if (dataSources == null || dataSources.isEmpty()) {
             throw new IllegalArgumentException("Datasource list cannot be blank or null.");
@@ -718,7 +758,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
                 addedDatasourceNames.add(dataSource.getName());
             } catch (ControllerOperationException coe) {
                 try {
-                    if(!addedDatasourceNames.isEmpty()){
+                    if (!addedDatasourceNames.isEmpty()) {
                         removeDatasources(controllerClientConfig, addedDatasourceNames, serverProfileNames);
                     }
                 } catch (ControllerOperationException coexp) {
@@ -729,12 +769,14 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
         }
     }
 
-    
-    /* (non-Javadoc)
-     * @see uk.co.techblue.jboss.controller.ControllerOperationExecutor#removeDatasources(uk.co.techblue.jboss.controller.vo.ControllerClientConfig, java.util.List, java.lang.String[])
+    /*
+     * (non-Javadoc)
+     * 
+     * @see uk.co.techblue.jboss.controller.ControllerOperationExecutor#removeDatasources(uk.co.techblue.jboss.controller.vo.
+     * ControllerClientConfig, java.util.List, java.lang.String[])
      */
     public void removeDatasources(final ControllerClientConfig controllerClientConfig, final List<String> datasourceNames,
-            final String... serverProfileNames) throws ControllerOperationException {
+        final String... serverProfileNames) throws ControllerOperationException {
 
         if (datasourceNames == null || datasourceNames.isEmpty()) {
             throw new IllegalArgumentException("Datasource list cannot be blank or null.");

@@ -63,5 +63,7 @@ public class ControllerConstants {
     public static final String DS_PROPERTY_VALIDATE_ON_MATCH = "validate-on-match";
 
     public static final String RESPONSE_PROPERTY_ROLLEDBACK = "rolled-back";
+    
+    public static final String REMOTING_PROTOCOL = "http-remoting";
 
 }
