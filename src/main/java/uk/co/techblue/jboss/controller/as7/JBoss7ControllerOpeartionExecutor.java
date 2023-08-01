@@ -84,37 +84,7 @@ import uk.co.techblue.jboss.util.StringUtils;
 public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExecutor {
 
     /** The logger instance. */
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
-    /**
-     * The main method. ONLY FOR TESTING!
-     * 
-     * @param args the arguments
-     */
-    public static void main(String[] args) {
-        try {
-            final JndiDataSource dataSource = new JndiDataSource("java:/mysql-testjboss7", "jdbc:mysql://localhost:3306/test",
-                "com.mysql", "root", "root");
-            dataSource.setMaxPoolSize(10);
-            dataSource.setPoolPrefill(true);
-            final ControllerClientConfig clientConfig = new ControllerClientConfig("127.0.0.1");
-            // clientConfig.setUserName("ajay");
-            // clientConfig.setPassword("ajay");
-            // List<ModelNode> dataSources = new JBoss7ControllerOpeartionExecutor().getDatasources(clientConfig, "",
-            // DatasourceStatus.ALL);
-            // for (ModelNode dataSource : dataSources) {
-            // System.out.println(dataSource.asProperty().getName());
-            // }
-            // new JBoss7ControllerOpeartionExecutor().disableDataSource(clientConfig, "java:/mysql-testjboss7","");
-            new JBoss7ControllerOpeartionExecutor().removeDatasource(clientConfig, "java:/mysql-testjboss7", "");
-            // new JBoss7ControllerOpeartionExecutor().createDatasource(clientConfig, dataSource, true);
-            // new JBoss7ControllerOpeartionExecutor().isDatasourceExists(clientConfig, dataSource.getJndiName());
-            // new JBoss7ControllerOpeartionExecutor().createDatasource(clientConfig, dataSource, true, "ha");
-            // new JBoss7ControllerOpeartionExecutor().isDatasourceExists(clientConfig, dataSource.getJndiName(), "full-ha");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    private final Logger logger = LoggerFactory.getLogger(JBoss7ControllerOpeartionExecutor.class);
 
     /*
      * (non-Javadoc)
@@ -122,6 +92,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      * @see uk.co.techblue.jboss.controller.ControllerOperationExecutor#createDatasource(uk.co.techblue.jboss.controller.vo.
      * ControllerClientConfig, uk.co.techblue.jboss.controller.vo.JndiDataSource, boolean, java.lang.String[])
      */
+    @Override
     public void createDatasource(final ControllerClientConfig controllerClientConfig, final JndiDataSource dataSource,
         final boolean enable, final String... serverProfileNames) throws ControllerOperationException {
         if (serverProfileNames != null && serverProfileNames.length > 0) {
@@ -202,6 +173,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      * @see uk.co.techblue.jboss.controller.ControllerOperationExecutor#removeDatasource(uk.co.techblue.jboss.controller.vo.
      * ControllerClientConfig, uk.co.techblue.jboss.controller.vo.JndiDataSource, java.lang.String[])
      */
+    @Override
     public void removeDatasource(final ControllerClientConfig controllerClientConfig, final String datasourceName,
         final String... serverProfileNames) throws ControllerOperationException {
         if (serverProfileNames != null && serverProfileNames.length > 0) {
@@ -378,6 +350,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      * @see uk.co.techblue.jboss.controller.ControllerOperationExecutor#isDatasourceExists(uk.co.techblue.jboss.controller.vo.
      * ControllerClientConfig, java.lang.String)
      */
+    @Override
     public boolean isDatasourceExists(final ControllerClientConfig controllerClientConfig, final String dataSourceName)
         throws ControllerOperationException {
         return isDatasourceExists(controllerClientConfig, dataSourceName, null);
@@ -389,6 +362,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      * @see uk.co.techblue.jboss.controller.ControllerOperationExecutor#isDatasourceExists(uk.co.techblue.jboss.controller.vo.
      * ControllerClientConfig, java.lang.String, java.lang.String)
      */
+    @Override
     public boolean isDatasourceExists(final ControllerClientConfig controllerClientConfig, final String dataSourceName,
         final String serverProfileName) throws ControllerOperationException {
         logger.info("Checking if datasource '{}' exists...", dataSourceName);
@@ -416,6 +390,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      * @see uk.co.techblue.jboss.controller.ControllerOperationExecutor#enableDataSource(uk.co.techblue.jboss.controller.vo.
      * ControllerClientConfig, java.lang.String, java.lang.String[])
      */
+    @Override
     public void enableDataSource(final ControllerClientConfig controllerClientConfig, final String datasourceName,
         final String... serverProfileNames) throws ControllerOperationException {
         if (serverProfileNames != null && serverProfileNames.length > 0) {
@@ -591,6 +566,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      * @see uk.co.techblue.jboss.controller.ControllerOperationExecutor#isDatasourceEnabled(uk.co.techblue.jboss.controller.vo.
      * ControllerClientConfig, java.lang.String, java.lang.String)
      */
+    @Override
     public boolean isDatasourceEnabled(final ControllerClientConfig controllerClientConfig, final String serverProfileName,
         final String datasource) throws ControllerOperationException {
         final ModelNode request = new ModelNode();
@@ -745,6 +721,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      * @see uk.co.techblue.jboss.controller.ControllerOperationExecutor#createDatasources(uk.co.techblue.jboss.controller.vo.
      * ControllerClientConfig, java.util.List, boolean, java.lang.String[])
      */
+    @Override
     public void createDatasources(final ControllerClientConfig controllerClientConfig, final List<JndiDataSource> dataSources,
         final boolean enable, final String... serverProfileNames) throws ControllerOperationException {
 
@@ -775,6 +752,7 @@ public class JBoss7ControllerOpeartionExecutor implements ControllerOperationExe
      * @see uk.co.techblue.jboss.controller.ControllerOperationExecutor#removeDatasources(uk.co.techblue.jboss.controller.vo.
      * ControllerClientConfig, java.util.List, java.lang.String[])
      */
+    @Override
     public void removeDatasources(final ControllerClientConfig controllerClientConfig, final List<String> datasourceNames,
         final String... serverProfileNames) throws ControllerOperationException {
 
