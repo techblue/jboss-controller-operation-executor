@@ -22,6 +22,9 @@ package uk.co.techblue.jboss.controller;
  */
 public class ControllerConstants {
 
+    private ControllerConstants() {
+    }
+
     public static final String DATASOURCE_SUBSYSTEM = "datasources";
 
     public static final String OPERATION_READ_RESOURCE = "read-resource";
