@@ -23,7 +23,6 @@ import uk.co.techblue.jboss.controller.exception.ControllerOperationException;
 import uk.co.techblue.jboss.controller.vo.ControllerClientConfig;
 import uk.co.techblue.jboss.controller.vo.JndiDataSource;
 
-// TODO: Auto-generated Javadoc
 /**
  * A service that executes operations on an application server management model controller.
  * 
