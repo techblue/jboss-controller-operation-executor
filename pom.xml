@@ -62,7 +62,7 @@
         <dependency>
             <groupId>org.wildfly.core</groupId>
             <artifactId>wildfly-cli</artifactId>
-            <version>3.1.0.Final</version>
+            <version>24.0.1.Final</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
